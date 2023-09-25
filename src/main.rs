@@ -32,6 +32,8 @@ enum Language
     CPlusPlus,
     CSharp,
 
+    FSharp,
+
     Rust,
 
     Python,
@@ -44,6 +46,8 @@ enum Language
     Cshtml,
 
     Java,
+
+    Swift,
 
     Json,
     Xml,
@@ -68,6 +72,8 @@ enum Language
     Batch,
     Cmd,
     Sh,
+
+    Assembly
 }
 
 impl Display for Language {
@@ -77,6 +83,7 @@ impl Display for Language {
             Language::C => "C",
             Language::CPlusPlus => "C++",
             Language::CSharp => "C#",
+            Language::FSharp => "F#",
             Language::Rust => "Rust",
             Language::Sln => "Visual Studio Solution",
             Language::Csproj => "C# Project",
@@ -104,7 +111,9 @@ impl Display for Language {
             Language::Powershell => "Powershell Script",
             Language::Batch => "Batch File",
             Language::Cmd => "CMD Script",
-            Language::Sh => "Bash Script"
+            Language::Sh => "Bash Script",
+            Language::Assembly => "Assembly",
+            Language::Swift => "Swift"
         };
 
         write!(f, "{text}")
@@ -125,6 +134,8 @@ fn extension_to_language(extension: &str) -> Language
 
         "cs" => Language::CSharp,
 
+        "fs" => Language::FSharp,
+
         "rs" => Language::Rust,
 
         "py" => Language::Python,
@@ -141,6 +152,8 @@ fn extension_to_language(extension: &str) -> Language
         "cshtml" => Language::Cshtml,
 
         "java" => Language::Java,
+
+        "swift" => Language::Swift,
 
         "json" => Language::Json,
         "xml" => Language::Xml,
@@ -176,6 +189,8 @@ fn extension_to_language(extension: &str) -> Language
         "bat" => Language::Batch,
         "cmd" => Language::Cmd,
         "sh" => Language::Sh,
+
+        "asm" => Language::Assembly,
         
         ext => Language::Unknown(ext.to_string())
     }
