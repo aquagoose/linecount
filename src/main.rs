@@ -194,6 +194,8 @@ fn extension_to_language(extension: &str) -> Language
         "csproj" => Language::Csproj,
 
         "txt" => Language::Text,
+        // TODO: SHould CFG/config files be a separate language?
+        "cfg" => Language::Text,
         "md" => Language::Markdown,
         "gitignore" => Language::Gitignore,
 
@@ -206,6 +208,7 @@ fn extension_to_language(extension: &str) -> Language
         "comp" => Language::Glsl,
 
         "hlsl" => Language::Hlsl,
+        "hlsli" => Language::Hlsl,
         "fx" => Language::Hlsl,
 
         "wgsl" => Language::Wgsl,
