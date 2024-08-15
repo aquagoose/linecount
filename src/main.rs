@@ -7,7 +7,7 @@ use toml::Value;
 struct CliArgs {
     directory: OsString,
 
-    #[arg(long = "ignore")]
+    #[arg(long = "ignore-dir", short = 'i')]
     ignored_dirs: Option<Vec<String>>,
 
     #[arg(long, default_value_t = false)]
@@ -23,7 +23,7 @@ struct CliArgs {
     config: Option<OsString>
 }
 
-#[derive(PartialEq, Eq, Hash)]
+#[derive(PartialEq, Eq, Hash, Clone, PartialOrd, Ord)]
 enum Language
 {
     Unknown(String),
@@ -286,6 +286,9 @@ fn main() {
 
         languages.entry(language).and_modify(|total| *total += count).or_insert(count);
     }
+
+    let mut languages: Vec<(Language, i32)> = languages.iter().map(|value| (value.0.clone(), *value.1)).collect();
+    languages.sort_by_key(|value| value.0.to_string());
 
     const LANGUAGES_NAME: &str = "Languages";
     const LINES_NAME: &str = "Lines";
