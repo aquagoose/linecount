@@ -7,8 +7,11 @@ use toml::Value;
 struct CliArgs {
     directory: OsString,
 
-    #[arg(long = "ignore-dir", short = 'i')]
+    #[arg(long = "exclude", short = 'e')]
     ignored_dirs: Option<Vec<String>>,
+
+    #[arg(long = "file-type", short = 'f')]
+    file_types: Option<Vec<OsString>>,
 
     #[arg(long, default_value_t = false)]
     count_comments: bool,
@@ -250,6 +253,12 @@ fn main() {
             continue;
         }
         let extension = extension.unwrap();
+
+        if let Some(file_types) = &args.file_types {
+            if !file_types.contains(&extension.to_os_string()) {
+                continue;
+            }
+        }
 
         let mut language = extension_to_language(extension.to_str().unwrap());
         if let Language::Unknown(ext) = &language {
