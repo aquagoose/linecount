@@ -39,6 +39,8 @@ enum Language
 
     Rust,
 
+    Zig,
+
     Python,
 
     JavaScript,
@@ -76,7 +78,17 @@ enum Language
     Cmd,
     Sh,
 
-    Assembly
+    Assembly,
+
+    Brainfuck,
+    Haskell,
+    Ruby,
+    Scala,
+    Basic,
+    VisualBasic,
+    Pascal,
+    Fortran,
+    Forth
 }
 
 impl Display for Language {
@@ -88,6 +100,7 @@ impl Display for Language {
             Language::CSharp => "C#",
             Language::FSharp => "F#",
             Language::Rust => "Rust",
+            Language::Zig => "Zig",
             Language::Sln => "Visual Studio Solution",
             Language::Csproj => "C# Project",
             Language::Python => "Python",
@@ -116,7 +129,16 @@ impl Display for Language {
             Language::Cmd => "CMD Script",
             Language::Sh => "Bash Script",
             Language::Assembly => "Assembly",
-            Language::Swift => "Swift"
+            Language::Swift => "Swift",
+            Language::Brainfuck => "Brainfuck",
+            Language::Haskell => "Haskell",
+            Language::Ruby => "Ruby",
+            Language::Scala => "Scala",
+            Language::Basic => "BASIC",
+            Language::VisualBasic => "Visual Basic",
+            Language::Pascal => "Pascal",
+            Language::Fortran => "Fortran",
+            Language::Forth => "Forth"
         };
 
         write!(f, "{text}")
@@ -140,6 +162,8 @@ fn extension_to_language(extension: &str) -> Language
         "fs" => Language::FSharp,
 
         "rs" => Language::Rust,
+
+        "zig" => Language::Zig,
 
         "py" => Language::Python,
 
@@ -194,6 +218,20 @@ fn extension_to_language(extension: &str) -> Language
         "sh" => Language::Sh,
 
         "asm" => Language::Assembly,
+
+        "bf" => Language::Brainfuck,
+        "hs" => Language::Haskell,
+        "rb" => Language::Ruby,
+        "scala" => Language::Scala,
+        "sc" => Language::Scala,
+        "bas" => Language::Basic,
+        "vb" => Language::VisualBasic,
+        "pas" => Language::Pascal,
+        "f" => Language::Fortran,
+        "for" => Language::Fortran,
+        "f90" => Language::Fortran,
+        "4th" => Language::Forth,
+        "fth" => Language::Forth,
         
         ext => Language::Unknown(ext.to_string())
     }
@@ -344,7 +382,10 @@ fn main() {
     }
     println!("|");
 
+    let mut complete_total = 0;
+
     for (language, total) in languages.iter() {
+        complete_total += total;
         let language = language.to_string();
         let total = total.to_string();
 
@@ -361,6 +402,9 @@ fn main() {
 
         println!(" |");
     }
+
+    println!();
+    println!("Total: {complete_total} lines");
 
     println!();
 }
