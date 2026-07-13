@@ -14,16 +14,17 @@ struct CliArgs {
     file_types: Option<Vec<OsString>>,
 
     #[arg(long, default_value_t = false)]
-    count_comments: bool,
-
-    #[arg(long, default_value_t = false)]
-    count_whitespace: bool,
-
-    #[arg(long, default_value_t = false)]
     count_unknown: bool,
 
     #[arg(long)]
     config: Option<OsString>
+}
+
+#[derive(Default, Clone, Copy)]
+struct LineCount {
+    num_lines_of_code: i32,
+    num_lines_of_whitespace: i32,
+    num_lines_of_comments: i32
 }
 
 #[derive(PartialEq, Eq, Hash, Clone, PartialOrd, Ord)]
@@ -323,9 +324,9 @@ fn main() {
             }
         }
 
-        println!("Counting {}...", path.to_str().unwrap());
-
-        let mut count = 0;
+        if cfg!(debug_assertions) {
+            println!("Counting {}...", path.to_str().unwrap());
+        }
 
         let file = fs::read_to_string(path);
         if file.is_err() {
@@ -333,23 +334,24 @@ fn main() {
         }
         let file = file.unwrap();
 
+        let entry = languages.entry(language).or_insert(LineCount::default());
+
         for line in file.lines() {
             let line = line.trim();
 
-            if line == "" && !args.count_whitespace {
-                continue;
-            } else if !args.count_comments && (line.starts_with("//") || line.starts_with("#")) {
-                continue;
+            if line == "" {
+                entry.num_lines_of_whitespace += 1;
+            } else if line.starts_with("//") || line.starts_with("#") {
+                entry.num_lines_of_comments += 1;
+            } else {
+                entry.num_lines_of_code += 1;
             }
-
-            count += 1;
         }
 
-        languages.entry(language).and_modify(|total| *total += count).or_insert(count);
     }
 
-    let mut languages: Vec<(Language, i32)> = languages.iter().map(|value| (value.0.clone(), *value.1)).collect();
-    languages.sort_by_key(|value| value.0.to_string());
+    let mut languages: Vec<(Language, LineCount)> = languages.iter().map(|value| (value.0.clone(), *value.1)).collect();
+    languages.sort_by_key(|value| -value.1.num_lines_of_code);
 
     const LANGUAGES_NAME: &str = "Languages";
     const LINES_NAME: &str = "Lines";
@@ -363,7 +365,7 @@ fn main() {
             length_names = lang_length;
         }
 
-        let lines_length = f32::log10((total + 1) as f32).ceil() as usize;
+        let lines_length = f32::log10((total.num_lines_of_code + 1) as f32).ceil() as usize;
         if lines_length > length_lines {
             length_lines = lines_length;
         }
@@ -396,12 +398,17 @@ fn main() {
     }
     println!("|");
 
-    let mut complete_total = 0;
+    let mut total_lines_of_code = 0;
+    let mut total_lines_of_whitespace = 0;
+    let mut total_lines_of_comments = 0;
 
     for (language, total) in languages.iter() {
-        complete_total += total;
+        total_lines_of_code += total.num_lines_of_code;
+        total_lines_of_whitespace += total.num_lines_of_whitespace;
+        total_lines_of_comments += total.num_lines_of_comments;
+
         let language = language.to_string();
-        let total = total.to_string();
+        let total = total.num_lines_of_code.to_string();
 
         print!("| {language}");
 
@@ -417,8 +424,10 @@ fn main() {
         println!(" |");
     }
 
+
+    let overall_total = total_lines_of_code + total_lines_of_comments + total_lines_of_whitespace;
     println!();
-    println!("Total: {complete_total} lines");
+    println!("Total\n---------\nCode:       {total_lines_of_code} lines\nWhitespace: {total_lines_of_whitespace} lines\nComments:   {total_lines_of_comments} lines\nOverall:    {overall_total} lines");
 
     println!();
 }
