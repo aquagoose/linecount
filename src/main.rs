@@ -38,8 +38,10 @@ enum Language
     FSharp,
 
     Rust,
-
     Zig,
+    Odin,
+    ZenC,
+    C3,
 
     Python,
 
@@ -77,6 +79,7 @@ enum Language
     Batch,
     Cmd,
     Sh,
+    Fish,
 
     Assembly,
 
@@ -101,6 +104,9 @@ impl Display for Language {
             Language::FSharp => "F#",
             Language::Rust => "Rust",
             Language::Zig => "Zig",
+            Language::Odin => "Odin",
+            Language::ZenC => "Zen C",
+            Language::C3 => "C3",
             Language::Sln => "Visual Studio Solution",
             Language::Csproj => "C# Project",
             Language::Python => "Python",
@@ -127,7 +133,8 @@ impl Display for Language {
             Language::Powershell => "Powershell Script",
             Language::Batch => "Batch File",
             Language::Cmd => "CMD Script",
-            Language::Sh => "Bash Script",
+            Language::Sh => "Shell Script",
+            Language::Fish => "Fish Script",
             Language::Assembly => "Assembly",
             Language::Swift => "Swift",
             Language::Brainfuck => "Brainfuck",
@@ -162,8 +169,10 @@ fn extension_to_language(extension: &str) -> Language
         "fs" => Language::FSharp,
 
         "rs" => Language::Rust,
-
         "zig" => Language::Zig,
+        "odin" => Language::Odin,
+        "zc" => Language::ZenC,
+        "c3" => Language::C3,
 
         "py" => Language::Python,
 
@@ -219,8 +228,10 @@ fn extension_to_language(extension: &str) -> Language
         "bat" => Language::Batch,
         "cmd" => Language::Cmd,
         "sh" => Language::Sh,
+        "fish" => Language::Fish,
 
         "asm" => Language::Assembly,
+        "s" => Language::Assembly,
 
         "bf" => Language::Brainfuck,
         "hs" => Language::Haskell,
